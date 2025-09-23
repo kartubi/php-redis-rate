@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fintar\RedisRate;
+namespace Kartubi\RedisRate;
 
 use Illuminate\Redis\Connections\Connection;
 use Illuminate\Support\Facades\Redis;

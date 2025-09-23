@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Fintar\RedisRate\Middleware;
+namespace Kartubi\RedisRate\Middleware;
 
 use Closure;
-use Fintar\RedisRate\Facades\RedisRate;
-use Fintar\RedisRate\Limit;
+use Kartubi\RedisRate\Facades\RedisRate;
+use Kartubi\RedisRate\Limit;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;

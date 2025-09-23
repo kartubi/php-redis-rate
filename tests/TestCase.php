@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fintar\RedisRate\Tests;
+namespace Kartubi\RedisRate\Tests;
 
-use Fintar\RedisRate\RedisRateServiceProvider;
+use Kartubi\RedisRate\RedisRateServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra

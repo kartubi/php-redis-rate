@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Fintar\RedisRate;
+namespace Kartubi\RedisRate;
 
 class Result
 {

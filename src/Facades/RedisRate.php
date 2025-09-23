@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Fintar\RedisRate\Facades;
+namespace Kartubi\RedisRate\Facades;
 
-use Fintar\RedisRate\Limit;
-use Fintar\RedisRate\RedisRateLimiter;
-use Fintar\RedisRate\Result;
+use Kartubi\RedisRate\Limit;
+use Kartubi\RedisRate\RedisRateLimiter;
+use Kartubi\RedisRate\Result;
 use Illuminate\Support\Facades\Facade;
 
 /**

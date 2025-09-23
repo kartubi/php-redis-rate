@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Fintar\RedisRate\Tests\Feature;
+namespace Kartubi\RedisRate\Tests\Feature;
 
-use Fintar\RedisRate\Facades\RedisRate;
-use Fintar\RedisRate\Limit;
-use Fintar\RedisRate\Tests\TestCase;
+use Kartubi\RedisRate\Facades\RedisRate;
+use Kartubi\RedisRate\Limit;
+use Kartubi\RedisRate\Tests\TestCase;
 use Illuminate\Support\Facades\Redis;
 
 class RedisRateLimiterTest extends TestCase

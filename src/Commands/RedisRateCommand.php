@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Fintar\RedisRate\Commands;
+namespace Kartubi\RedisRate\Commands;
 
-use Fintar\RedisRate\Facades\RedisRate;
-use Fintar\RedisRate\Limit;
+use Kartubi\RedisRate\Facades\RedisRate;
+use Kartubi\RedisRate\Limit;
 use Illuminate\Console\Command;
 
 class RedisRateCommand extends Command

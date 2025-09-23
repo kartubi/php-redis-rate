@@ -1,13 +1,14 @@
 {
-    "name": "fintar/php-redis-rate",
+    "name": "kartubi/php-redis-rate",
     "description": "Redis-based rate limiting for PHP/Laravel using GCRA algorithm",
     "keywords": ["laravel", "redis", "rate-limiting", "gcra", "leaky-bucket"],
     "type": "library",
     "license": "MIT",
+    "homepage": "https://github.com/kartubi/php-redis-rate",
     "authors": [
         {
-            "name": "Fintar",
-            "email": "dev@fintar.id"
+            "name": "Kartubi",
+            "email": "kartubi@gmail.com"
         }
     ],
     "require": {
@@ -23,21 +24,21 @@
     },
     "autoload": {
         "psr-4": {
-            "Fintar\\RedisRate\\": "src/"
+            "Kartubi\\RedisRate\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Fintar\\RedisRate\\Tests\\": "tests/"
+            "Kartubi\\RedisRate\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Fintar\\RedisRate\\RedisRateServiceProvider"
+                "Kartubi\\RedisRate\\RedisRateServiceProvider"
             ],
             "aliases": {
-                "RedisRate": "Fintar\\RedisRate\\Facades\\RedisRate"
+                "RedisRate": "Kartubi\\RedisRate\\Facades\\RedisRate"
             }
         }
     },

@@ -18,7 +18,7 @@ A Laravel package for Redis-based rate limiting using the GCRA (Generic Cell Rat
 Install the package via Composer:
 
 ```bash
-composer require fintar/php-redis-rate
+composer require kartubi/php-redis-rate
 ```
 
 The package will automatically register itself via Laravel's package discovery.
@@ -41,8 +41,8 @@ php artisan vendor:publish --tag=redis-rate-config
 ### Using the Facade
 
 ```php
-use Fintar\RedisRate\Facades\RedisRate;
-use Fintar\RedisRate\Limit;
+use Kartubi\RedisRate\Facades\RedisRate;
+use Kartubi\RedisRate\Limit;
 
 // Allow 10 requests per second
 $result = RedisRate::allow('user:123', Limit::perSecond(10));
@@ -59,8 +59,8 @@ if ($result->isAllowed()) {
 ### Using Dependency Injection
 
 ```php
-use Fintar\RedisRate\RedisRateLimiter;
-use Fintar\RedisRate\Limit;
+use Kartubi\RedisRate\RedisRateLimiter;
+use Kartubi\RedisRate\Limit;
 
 class ApiController extends Controller
 {
@@ -153,7 +153,7 @@ In your `app/Http/Kernel.php`:
 ```php
 protected $routeMiddleware = [
     // ...
-    'redis-rate' => \Fintar\RedisRate\Middleware\RateLimitMiddleware::class,
+    'redis-rate' => \Kartubi\RedisRate\Middleware\RateLimitMiddleware::class,
 ];
 ```
 

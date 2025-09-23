@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Fintar\RedisRate\Tests\Unit;
+namespace Kartubi\RedisRate\Tests\Unit;
 
-use Fintar\RedisRate\Limit;
+use Kartubi\RedisRate\Limit;
 use PHPUnit\Framework\TestCase;
 
 class LimitTest extends TestCase
