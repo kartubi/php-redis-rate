@@ -6,13 +6,19 @@ namespace Kartubi\RedisRate;
 
 class Result
 {
-    public function __construct(
-        public readonly Limit $limit,
-        public readonly int $allowed,
-        public readonly int $remaining,
-        public readonly float $retryAfter,
-        public readonly float $resetAfter
-    ) {
+    public $limit;
+    public $allowed;
+    public $remaining;
+    public $retryAfter;
+    public $resetAfter;
+
+    public function __construct(Limit $limit, int $allowed, int $remaining, float $retryAfter, float $resetAfter)
+    {
+        $this->limit = $limit;
+        $this->allowed = $allowed;
+        $this->remaining = $remaining;
+        $this->retryAfter = $retryAfter;
+        $this->resetAfter = $resetAfter;
     }
 
     public function isAllowed(): bool

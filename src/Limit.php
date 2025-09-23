@@ -6,11 +6,15 @@ namespace Kartubi\RedisRate;
 
 class Limit
 {
-    public function __construct(
-        public readonly int $rate,
-        public readonly int $burst,
-        public readonly int $period
-    ) {
+    public $rate;
+    public $burst;
+    public $period;
+
+    public function __construct(int $rate, int $burst, int $period)
+    {
+        $this->rate = $rate;
+        $this->burst = $burst;
+        $this->period = $period;
     }
 
     public static function perSecond(int $rate): self
@@ -35,12 +39,20 @@ class Limit
 
     public function __toString(): string
     {
-        $periodStr = match ($this->period) {
-            1 => 's',
-            60 => 'm',
-            3600 => 'h',
-            default => $this->period . 's'
-        };
+        switch ($this->period) {
+            case 1:
+                $periodStr = 's';
+                break;
+            case 60:
+                $periodStr = 'm';
+                break;
+            case 3600:
+                $periodStr = 'h';
+                break;
+            default:
+                $periodStr = $this->period . 's';
+                break;
+        }
 
         return "{$this->rate} req/{$periodStr} (burst {$this->burst})";
     }

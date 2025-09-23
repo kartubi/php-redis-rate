@@ -1,6 +1,6 @@
-# PHP Redis Rate Limiter
+# PHP Redis Rate Limiter (v1.x - Legacy)
 
-A Laravel package for Redis-based rate limiting using the GCRA (Generic Cell Rate Algorithm) algorithm, compatible with Laravel 10, 11, and 12. This package is inspired by and compatible with the [go-redis/redis_rate](https://github.com/go-redis/redis_rate) library.
+A Laravel package for Redis-based rate limiting using the GCRA (Generic Cell Rate Algorithm) algorithm, compatible with Laravel 5.5-9.x and PHP 7.2+. This package is inspired by and compatible with the [go-redis/redis_rate](https://github.com/go-redis/redis_rate) library.
 
 ## Features
 
@@ -9,7 +9,7 @@ A Laravel package for Redis-based rate limiting using the GCRA (Generic Cell Rat
 - **Redis Lua Scripts**: Atomic operations using Redis Lua scripts for consistency
 - **Flexible Limits**: Support for per-second, per-minute, per-hour, and custom rate limits
 - **Burst Support**: Configure burst capacity independently from rate limits
-- **Laravel 11/12 Compatible**: Fully tested with the latest Laravel versions
+- **Legacy Laravel Support**: Compatible with Laravel 5.5, 6.x, 7.x, 8.x, 9.x
 - **Middleware Support**: Ready-to-use middleware for HTTP rate limiting
 - **Artisan Commands**: Built-in testing commands for debugging rate limits
 
@@ -17,8 +17,14 @@ A Laravel package for Redis-based rate limiting using the GCRA (Generic Cell Rat
 
 Install the package via Composer:
 
+**For Legacy Laravel Projects (5.5-9.x):**
 ```bash
-composer require kartubi/php-redis-rate
+composer require kartubi/php-redis-rate:^1.0
+```
+
+**For Modern Laravel Projects (10+):**
+```bash
+composer require kartubi/php-redis-rate:^3.0
 ```
 
 The package will automatically register itself via Laravel's package discovery.
@@ -29,12 +35,12 @@ Publish the configuration file (optional):
 php artisan vendor:publish --tag=redis-rate-config
 ```
 
-## Requirements
+## Requirements (v1.x)
 
-- PHP 8.1 or higher
-- Laravel 10.x, 11.x, or 12.x
+- PHP 7.2 or higher
+- Laravel 5.5, 6.x, 7.x, 8.x, or 9.x
 - Redis 3.2 or newer (requires `replicate_commands` feature)
-- Either the Redis PHP extension or Predis
+- Either the Redis PHP extension or Predis 1.1+
 
 ## Basic Usage
 
@@ -233,11 +239,14 @@ This package implements the GCRA (Generic Cell Rate Algorithm), also known as th
 - **Memory efficient**: Uses minimal Redis memory per key
 - **Atomic operations**: All operations are atomic using Redis Lua scripts
 
-## Laravel Version Compatibility
+## Version Compatibility
 
 | Package Version | Laravel Version | PHP Version |
 |-----------------|-----------------|-------------|
-| 1.x             | 10.x, 11.x, 12.x | 8.1+        |
+| 1.x (Legacy)    | 5.5, 6.x, 7.x, 8.x, 9.x | 7.2+ |
+| 3.x (Modern)    | 10.x, 11.x, 12.x | 8.1+ |
+
+> **Note:** This is the v1.x branch for legacy Laravel support. For modern Laravel versions, use v3.x from the main branch.
 
 ## Testing
 

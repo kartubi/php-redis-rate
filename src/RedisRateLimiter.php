@@ -12,9 +12,9 @@ class RedisRateLimiter
     private const REDIS_PREFIX = 'rate:';
     private const JAN_1_2017 = 1483228800;
 
-    private Connection $redis;
+    private $redis;
 
-    public function __construct(?Connection $redis = null)
+    public function __construct(Connection $redis = null)
     {
         $this->redis = $redis ?: Redis::connection();
     }
@@ -33,11 +33,11 @@ class RedisRateLimiter
         $result = $this->redis->eval($script, 1, ...$keys, ...$args);
 
         return new Result(
-            limit: $limit,
-            allowed: (int) $result[0],
-            remaining: (int) $result[1],
-            retryAfter: (float) $result[2],
-            resetAfter: (float) $result[3]
+            $limit,
+            (int) $result[0],
+            (int) $result[1],
+            (float) $result[2],
+            (float) $result[3]
         );
     }
 
@@ -50,11 +50,11 @@ class RedisRateLimiter
         $result = $this->redis->eval($script, 1, ...$keys, ...$args);
 
         return new Result(
-            limit: $limit,
-            allowed: (int) $result[0],
-            remaining: (int) $result[1],
-            retryAfter: (float) $result[2],
-            resetAfter: (float) $result[3]
+            $limit,
+            (int) $result[0],
+            (int) $result[1],
+            (float) $result[2],
+            (float) $result[3]
         );
     }
 
