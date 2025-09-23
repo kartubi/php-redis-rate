@@ -1,6 +1,8 @@
 # PHP Redis Rate Limiter
 
-A Laravel package for Redis-based rate limiting using the GCRA (Generic Cell Rate Algorithm) algorithm, compatible with Laravel 10, 11, and 12. This package is inspired by and compatible with the [go-redis/redis_rate](https://github.com/go-redis/redis_rate) library.
+A modern Laravel package for Redis-based rate limiting using the GCRA (Generic Cell Rate Algorithm) algorithm. Built for Laravel 10+ with PHP 8.1+ features. Inspired by and compatible with the [go-redis/redis_rate](https://github.com/go-redis/redis_rate) library.
+
+> **Looking for legacy Laravel support?** Check out the [v1.x branch](https://github.com/kartubi/php-redis-rate/tree/v1.x) for Laravel 5.5-9.x compatibility.
 
 ## Features
 
@@ -9,7 +11,7 @@ A Laravel package for Redis-based rate limiting using the GCRA (Generic Cell Rat
 - **Redis Lua Scripts**: Atomic operations using Redis Lua scripts for consistency
 - **Flexible Limits**: Support for per-second, per-minute, per-hour, and custom rate limits
 - **Burst Support**: Configure burst capacity independently from rate limits
-- **Laravel 11/12 Compatible**: Fully tested with the latest Laravel versions
+- **Modern PHP Features**: Uses PHP 8.1+ features like readonly properties, named parameters, and match expressions
 - **Middleware Support**: Ready-to-use middleware for HTTP rate limiting
 - **Artisan Commands**: Built-in testing commands for debugging rate limits
 
@@ -17,15 +19,11 @@ A Laravel package for Redis-based rate limiting using the GCRA (Generic Cell Rat
 
 Install the package via Composer:
 
-**For Modern Laravel Projects (10+):**
 ```bash
-composer require kartubi/php-redis-rate:^3.0
+composer require kartubi/php-redis-rate
 ```
 
-**For Legacy Laravel Projects (5.5-9.x):**
-```bash
-composer require kartubi/php-redis-rate:^1.0
-```
+> **For legacy Laravel projects (5.5-9.x):** Use `composer require kartubi/php-redis-rate:^1.0` instead.
 
 The package will automatically register itself via Laravel's package discovery.
 
@@ -40,7 +38,7 @@ php artisan vendor:publish --tag=redis-rate-config
 - PHP 8.1 or higher
 - Laravel 10.x, 11.x, or 12.x
 - Redis 3.2 or newer (requires `replicate_commands` feature)
-- Either the Redis PHP extension or Predis
+- Either the Redis PHP extension or Predis 2.0+
 
 ## Basic Usage
 
@@ -241,10 +239,12 @@ This package implements the GCRA (Generic Cell Rate Algorithm), also known as th
 
 ## Version Compatibility
 
-| Package Version | Laravel Version | PHP Version |
-|-----------------|-----------------|-------------|
-| 1.x (Legacy)    | 5.5, 6.x, 7.x, 8.x, 9.x | 7.2+ |
-| 3.x (Modern)    | 10.x, 11.x, 12.x | 8.1+ |
+| Package Version | Laravel Version | PHP Version | Branch |
+|-----------------|-----------------|-------------|--------|
+| **3.x** (Current) | 10.x, 11.x, 12.x | 8.1+ | `main` |
+| 1.x (Legacy) | 5.5, 6.x, 7.x, 8.x, 9.x | 7.2+ | [`v1.x`](https://github.com/kartubi/php-redis-rate/tree/v1.x) |
+
+> **Note:** This is the modern v3.x version. For legacy Laravel support, see the [v1.x branch documentation](https://github.com/kartubi/php-redis-rate/tree/v1.x).
 
 ## Testing
 
