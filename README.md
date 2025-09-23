@@ -17,8 +17,14 @@ A Laravel package for Redis-based rate limiting using the GCRA (Generic Cell Rat
 
 Install the package via Composer:
 
+**For Modern Laravel Projects (10+):**
 ```bash
-composer require kartubi/php-redis-rate
+composer require kartubi/php-redis-rate:^3.0
+```
+
+**For Legacy Laravel Projects (5.5-9.x):**
+```bash
+composer require kartubi/php-redis-rate:^1.0
 ```
 
 The package will automatically register itself via Laravel's package discovery.
@@ -233,11 +239,12 @@ This package implements the GCRA (Generic Cell Rate Algorithm), also known as th
 - **Memory efficient**: Uses minimal Redis memory per key
 - **Atomic operations**: All operations are atomic using Redis Lua scripts
 
-## Laravel Version Compatibility
+## Version Compatibility
 
 | Package Version | Laravel Version | PHP Version |
 |-----------------|-----------------|-------------|
-| 1.x             | 10.x, 11.x, 12.x | 8.1+        |
+| 1.x (Legacy)    | 5.5, 6.x, 7.x, 8.x, 9.x | 7.2+ |
+| 3.x (Modern)    | 10.x, 11.x, 12.x | 8.1+ |
 
 ## Testing
 
