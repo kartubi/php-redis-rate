@@ -11,25 +11,40 @@ class RedisRateServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(RedisRateLimiter::class, function ($app) {
-            // Try to use dedicated rate_limiter connection first
-            $connectionName = config('redis-rate.connection', 'rate_limiter');
+            $redisConfig = config('redis-rate.redis');
+            $keyPrefix = config('redis-rate.key_prefix', 'rate:');
 
-            try {
-                // Check if rate_limiter connection exists
-                $redis = \Illuminate\Support\Facades\Redis::connection($connectionName);
-                $keyPrefix = config('redis-rate.key_prefix', 'rate:');
+            // Create dedicated Redis connection for rate limiting
+            $redis = $this->createRedisConnection($redisConfig);
 
-                return new RedisRateLimiter($redis, $keyPrefix);
-            } catch (\Exception $e) {
-                // Fallback to default connection if rate_limiter doesn't exist
-                $redis = \Illuminate\Support\Facades\Redis::connection();
-                $keyPrefix = config('redis-rate.key_prefix', 'rate:');
-
-                return new RedisRateLimiter($redis, $keyPrefix);
-            }
+            return new RedisRateLimiter($redis, $keyPrefix);
         });
 
         $this->app->alias(RedisRateLimiter::class, 'redis-rate');
+    }
+
+    /**
+     * Create a dedicated Redis connection for rate limiting
+     */
+    private function createRedisConnection(array $config): \Redis
+    {
+        $redis = new \Redis();
+
+        $redis->connect(
+            $config['host'] ?? '127.0.0.1',
+            $config['port'] ?? 6379,
+            $config['timeout'] ?? 5.0
+        );
+
+        if (!empty($config['password'])) {
+            $redis->auth($config['password']);
+        }
+
+        if (isset($config['database'])) {
+            $redis->select($config['database']);
+        }
+
+        return $redis;
     }
 
     public function boot(): void

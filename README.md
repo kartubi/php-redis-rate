@@ -42,9 +42,10 @@ php artisan redis-rate:setup
 ```
 
 This command will:
-- ✅ Add a dedicated `rate_limiter` Redis connection to your `config/database.php`
+- ✅ Publish the `config/redis-rate.php` configuration file
+- ✅ Create a self-contained Redis connection (no changes to `config/database.php`)
 - ✅ Use a separate Redis database (default: database 2)
-- ✅ Remove Laravel's app-name prefix for rate limiting keys
+- ✅ Remove Laravel's app-name prefix completely
 - ✅ Result in clean keys like: `rate:user123`
 
 You can also specify a custom database number:
@@ -57,14 +58,13 @@ php artisan redis-rate:setup --database=3
 After running setup, you can optionally configure these environment variables:
 
 ```env
-# Redis database for rate limiting (optional, defaults to 2)
-REDIS_RATE_DB=2
-
-# Custom Redis connection for rate limiting (optional, auto-detected)
-REDIS_RATE_CONNECTION=rate_limiter
-
-# Custom key prefix (optional, defaults to 'rate:')
-REDIS_RATE_PREFIX=rate:
+# Redis Rate Limiter Configuration (all optional)
+REDIS_RATE_HOST=127.0.0.1      # Redis host
+REDIS_RATE_PORT=6379           # Redis port
+REDIS_RATE_PASSWORD=null       # Redis password
+REDIS_RATE_DB=2                # Redis database for rate limiting
+REDIS_RATE_PREFIX=rate:        # Key prefix
+REDIS_RATE_TIMEOUT=5.0         # Connection timeout
 ```
 
 ### Docker Configuration
@@ -82,8 +82,9 @@ services:
       - REDIS_DB=0
 
       # Redis Rate Limiter (clean keys)
+      - REDIS_RATE_HOST=redis
+      - REDIS_RATE_PORT=6379
       - REDIS_RATE_DB=2
-      - REDIS_RATE_CONNECTION=rate_limiter
       - REDIS_RATE_PREFIX=rate
 ```
 

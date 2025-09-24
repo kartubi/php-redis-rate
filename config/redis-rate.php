@@ -5,15 +5,21 @@ declare(strict_types=1);
 return [
     /*
     |--------------------------------------------------------------------------
-    | Default Redis Connection
+    | Redis Connection Configuration
     |--------------------------------------------------------------------------
     |
-    | This option controls the default Redis connection that will be used
-    | for rate limiting. If null, the default Redis connection will be used.
+    | Configure Redis connection specifically for rate limiting.
+    | This creates a dedicated connection separate from Laravel's main Redis.
     |
     */
 
-    'connection' => env('REDIS_RATE_CONNECTION'),
+    'redis' => [
+        'host' => env('REDIS_RATE_HOST', env('REDIS_HOST', '127.0.0.1')),
+        'port' => env('REDIS_RATE_PORT', env('REDIS_PORT', 6379)),
+        'password' => env('REDIS_RATE_PASSWORD', env('REDIS_PASSWORD', null)),
+        'database' => env('REDIS_RATE_DB', 2),
+        'timeout' => env('REDIS_RATE_TIMEOUT', 5.0),
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -21,8 +27,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | This prefix will be added to all rate limiting keys stored in Redis.
-    | Useful for avoiding conflicts with other applications using the same
-    | Redis instance.
+    | No Laravel app-name prefix will be added.
     |
     */
 
