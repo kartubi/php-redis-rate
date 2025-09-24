@@ -17,7 +17,7 @@ return [
         'host' => env('REDIS_RATE_HOST', env('REDIS_HOST', '127.0.0.1')),
         'port' => env('REDIS_RATE_PORT', env('REDIS_PORT', 6379)),
         'password' => env('REDIS_RATE_PASSWORD', env('REDIS_PASSWORD', null)),
-        'database' => env('REDIS_RATE_DB', 2),
+        'database' => env('REDIS_RATE_DB', 0),
         'timeout' => env('REDIS_RATE_TIMEOUT', 5.0),
     ],
 
