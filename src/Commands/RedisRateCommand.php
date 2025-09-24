@@ -31,7 +31,7 @@ class RedisRateCommand extends Command
 
         $this->info("Testing rate limit: {$limit}");
         $this->info("Key: {$key}");
-        $this->newLine();
+        $this->line('');
 
         for ($i = 1; $i <= $requests; $i++) {
             $result = RedisRate::allow($key, $limit);
@@ -46,7 +46,7 @@ class RedisRateCommand extends Command
             }
         }
 
-        $this->newLine();
+        $this->line('');
         $this->info('Test completed!');
 
         return 0;
