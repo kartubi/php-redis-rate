@@ -11,13 +11,21 @@ class RedisRateServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(RedisRateLimiter::class, function ($app) {
-            $redisConfig = config('redis-rate.redis');
             $keyPrefix = config('redis-rate.key_prefix', 'rate:');
 
-            // Create dedicated Redis connection for rate limiting
-            $redis = $this->createRedisConnection($redisConfig);
+            // If Redis configuration is provided, create dedicated connection
+            $redisConfig = config('redis-rate.redis');
+            if ($redisConfig && !empty($redisConfig['host'])) {
+                try {
+                    $redis = $this->createRedisConnection($redisConfig);
+                    return new RedisRateLimiter($redis, $keyPrefix);
+                } catch (\Exception $e) {
+                    // Fall back to default if custom connection fails
+                }
+            }
 
-            return new RedisRateLimiter($redis, $keyPrefix);
+            // Fallback to default Laravel Redis connection or null
+            return new RedisRateLimiter(null, $keyPrefix);
         });
 
         $this->app->alias(RedisRateLimiter::class, 'redis-rate');
@@ -26,7 +34,7 @@ class RedisRateServiceProvider extends ServiceProvider
     /**
      * Create a dedicated Redis connection for rate limiting
      */
-    private function createRedisConnection(array $config): \Redis
+    private function createRedisConnection(array $config)
     {
         $redis = new \Redis();
 
