@@ -32,8 +32,8 @@ class RedisRateServiceProvider extends ServiceProvider
 
         $redis->connect(
             $config['host'] ?? '127.0.0.1',
-            $config['port'] ?? 6379,
-            $config['timeout'] ?? 5.0
+            (int) ($config['port'] ?? 6379),
+            (float) ($config['timeout'] ?? 5.0)
         );
 
         if (!empty($config['password'])) {
@@ -41,7 +41,7 @@ class RedisRateServiceProvider extends ServiceProvider
         }
 
         if (isset($config['database'])) {
-            $redis->select($config['database']);
+            $redis->select((int) $config['database']);
         }
 
         return $redis;
