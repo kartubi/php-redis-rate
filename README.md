@@ -33,6 +33,40 @@ Publish the configuration file (optional):
 php artisan vendor:publish --tag=redis-rate-config
 ```
 
+### Clean Redis Keys Setup (Recommended)
+
+By default, Laravel adds an app-name prefix to Redis keys (e.g., `laravel-app-database-rate:user123`). For cleaner rate limiting keys, run the setup command:
+
+```bash
+php artisan redis-rate:setup
+```
+
+This command will:
+- ✅ Add a dedicated `rate_limiter` Redis connection to your `config/database.php`
+- ✅ Use a separate Redis database (default: database 2)
+- ✅ Remove Laravel's app-name prefix for rate limiting keys
+- ✅ Result in clean keys like: `rate:user123`
+
+You can also specify a custom database number:
+```bash
+php artisan redis-rate:setup --database=3
+```
+
+### Environment Configuration
+
+After running setup, you can optionally configure these environment variables:
+
+```env
+# Redis database for rate limiting (optional, defaults to 2)
+REDIS_RATE_DB=2
+
+# Custom Redis connection for rate limiting (optional, auto-detected)
+REDIS_RATE_CONNECTION=rate_limiter
+
+# Custom key prefix (optional, defaults to 'rate:')
+REDIS_RATE_PREFIX=rate:
+```
+
 ## Requirements
 
 - PHP 8.1 or higher

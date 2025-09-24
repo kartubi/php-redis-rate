@@ -6,15 +6,16 @@ namespace Kartubi\RedisRate;
 
 class RedisRateLimiter
 {
-    private const REDIS_PREFIX = 'rate:';
     private const JAN_1_2017 = 1483228800;
 
     private $redis;
+    private string $keyPrefix;
 
     /**
      * @param mixed $redis Any Redis client (Redis, Predis\Client, or Laravel Connection)
+     * @param string $keyPrefix Prefix for Redis keys
      */
-    public function __construct($redis = null)
+    public function __construct($redis = null, string $keyPrefix = 'rate:')
     {
         if ($redis === null && class_exists('\Illuminate\Support\Facades\Redis')) {
             $redis = \Illuminate\Support\Facades\Redis::connection();
@@ -25,6 +26,7 @@ class RedisRateLimiter
         }
 
         $this->redis = $redis;
+        $this->keyPrefix = $keyPrefix;
     }
 
     public function allow(string $key, Limit $limit): Result
@@ -35,7 +37,7 @@ class RedisRateLimiter
     public function allowN(string $key, Limit $limit, int $n): Result
     {
         $script = $this->getAllowNScript();
-        $keys = [self::REDIS_PREFIX . $key];
+        $keys = [$this->keyPrefix . $key];
         $args = [
             $limit->burst,
             $limit->rate,
@@ -57,7 +59,7 @@ class RedisRateLimiter
     public function allowAtMost(string $key, Limit $limit, int $n): Result
     {
         $script = $this->getAllowAtMostScript();
-        $keys = [self::REDIS_PREFIX . $key];
+        $keys = [$this->keyPrefix . $key];
         $args = [
             $limit->burst,
             $limit->rate,
@@ -78,7 +80,7 @@ class RedisRateLimiter
 
     public function reset(string $key): bool
     {
-        $fullKey = self::REDIS_PREFIX . $key;
+        $fullKey = $this->keyPrefix . $key;
 
         // Handle different Redis clients
         if (method_exists($this->redis, 'del')) {

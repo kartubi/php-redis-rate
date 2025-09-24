@@ -11,7 +11,22 @@ class RedisRateServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(RedisRateLimiter::class, function ($app) {
-            return new RedisRateLimiter();
+            // Try to use dedicated rate_limiter connection first
+            $connectionName = config('redis-rate.connection', 'rate_limiter');
+
+            try {
+                // Check if rate_limiter connection exists
+                $redis = \Illuminate\Support\Facades\Redis::connection($connectionName);
+                $keyPrefix = config('redis-rate.key_prefix', 'rate:');
+
+                return new RedisRateLimiter($redis, $keyPrefix);
+            } catch (\Exception $e) {
+                // Fallback to default connection if rate_limiter doesn't exist
+                $redis = \Illuminate\Support\Facades\Redis::connection();
+                $keyPrefix = config('redis-rate.key_prefix', 'rate:');
+
+                return new RedisRateLimiter($redis, $keyPrefix);
+            }
         });
 
         $this->app->alias(RedisRateLimiter::class, 'redis-rate');
@@ -26,6 +41,7 @@ class RedisRateServiceProvider extends ServiceProvider
 
             $this->commands([
                 Commands\RedisRateCommand::class,
+                Commands\SetupRedisCommand::class,
             ]);
         }
 
