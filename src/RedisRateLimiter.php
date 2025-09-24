@@ -4,19 +4,27 @@ declare(strict_types=1);
 
 namespace Kartubi\RedisRate;
 
-use Illuminate\Redis\Connections\Connection;
-use Illuminate\Support\Facades\Redis;
-
 class RedisRateLimiter
 {
     private const REDIS_PREFIX = 'rate:';
     private const JAN_1_2017 = 1483228800;
 
-    private Connection $redis;
+    private $redis;
 
-    public function __construct(?Connection $redis = null)
+    /**
+     * @param mixed $redis Any Redis client (Redis, Predis\Client, or Laravel Connection)
+     */
+    public function __construct($redis = null)
     {
-        $this->redis = $redis ?: Redis::connection();
+        if ($redis === null && class_exists('\Illuminate\Support\Facades\Redis')) {
+            $redis = \Illuminate\Support\Facades\Redis::connection();
+        }
+
+        if ($redis === null) {
+            throw new \InvalidArgumentException('Redis client is required');
+        }
+
+        $this->redis = $redis;
     }
 
     public function allow(string $key, Limit $limit): Result
@@ -28,9 +36,14 @@ class RedisRateLimiter
     {
         $script = $this->getAllowNScript();
         $keys = [self::REDIS_PREFIX . $key];
-        $args = [$limit->burst, $limit->rate, $limit->period, $n];
+        $args = [
+            $limit->burst,
+            $limit->rate,
+            (int) $limit->period,
+            $n
+        ];
 
-        $result = $this->redis->eval($script, 1, ...$keys, ...$args);
+        $result = $this->evalScript($script, $keys, $args);
 
         return new Result(
             limit: $limit,
@@ -45,9 +58,14 @@ class RedisRateLimiter
     {
         $script = $this->getAllowAtMostScript();
         $keys = [self::REDIS_PREFIX . $key];
-        $args = [$limit->burst, $limit->rate, $limit->period, $n];
+        $args = [
+            $limit->burst,
+            $limit->rate,
+            (int) $limit->period,
+            $n
+        ];
 
-        $result = $this->redis->eval($script, 1, ...$keys, ...$args);
+        $result = $this->evalScript($script, $keys, $args);
 
         return new Result(
             limit: $limit,
@@ -60,9 +78,64 @@ class RedisRateLimiter
 
     public function reset(string $key): bool
     {
-        return (bool) $this->redis->del(self::REDIS_PREFIX . $key);
+        $fullKey = self::REDIS_PREFIX . $key;
+
+        // Handle different Redis clients
+        if (method_exists($this->redis, 'del')) {
+            return (bool) $this->redis->del($fullKey);
+        } elseif (method_exists($this->redis, 'command')) {
+            return (bool) $this->redis->command('del', [$fullKey]);
+        } else {
+            throw new \RuntimeException('Unsupported Redis client');
+        }
     }
 
+    /**
+     * Execute Lua script with different Redis clients
+     */
+    private function evalScript(string $script, array $keys, array $args): array
+    {
+        $className = get_class($this->redis);
+
+        // Predis\Client
+        if ($className === 'Predis\Client') {
+            return $this->redis->eval($script, count($keys), ...$keys, ...$args);
+        }
+        // Raw Redis extension
+        elseif ($className === 'Redis') {
+            return $this->redis->eval($script, array_merge($keys, $args), count($keys));
+        }
+        // Laravel Redis Connection
+        elseif (strpos($className, 'Illuminate\\Redis') !== false) {
+            return $this->redis->eval($script, count($keys), ...$keys, ...$args);
+        }
+        // Laravel command interface
+        elseif (method_exists($this->redis, 'command')) {
+            return $this->redis->command('eval', [
+                $script,
+                count($keys),
+                ...$keys,
+                ...$args
+            ]);
+        }
+        // Generic eval method
+        elseif (method_exists($this->redis, 'eval')) {
+            try {
+                // Try Predis-style first
+                return $this->redis->eval($script, count($keys), ...$keys, ...$args);
+            } catch (\Exception $e) {
+                // Try Redis extension style
+                return $this->redis->eval($script, array_merge($keys, $args), count($keys));
+            }
+        }
+        else {
+            throw new \RuntimeException("Unsupported Redis client: {$className}");
+        }
+    }
+
+    /**
+     * Original allowN Lua script from go-redis/redis_rate
+     */
     private function getAllowNScript(): string
     {
         return <<<'LUA'
@@ -126,6 +199,9 @@ return {cost, remaining, tostring(retry_after), tostring(reset_after)}
 LUA;
     }
 
+    /**
+     * Original allowAtMost Lua script from go-redis/redis_rate
+     */
     private function getAllowAtMostScript(): string
     {
         return <<<'LUA'
