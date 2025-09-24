@@ -67,6 +67,31 @@ REDIS_RATE_CONNECTION=rate_limiter
 REDIS_RATE_PREFIX=rate:
 ```
 
+### Docker Configuration
+
+For Docker environments, add these environment variables to your `docker-compose.yml`:
+
+```yaml
+services:
+  your-laravel-app:
+    environment:
+      # Standard Redis connection
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=null
+      - REDIS_DB=0
+
+      # Redis Rate Limiter (clean keys)
+      - REDIS_RATE_DB=2
+      - REDIS_RATE_CONNECTION=rate_limiter
+      - REDIS_RATE_PREFIX=rate
+```
+
+The setup command will run automatically in your Dockerfile:
+```dockerfile
+RUN php artisan redis-rate:setup --force --database=2 || true
+```
+
 ## Requirements
 
 - PHP 8.1 or higher
